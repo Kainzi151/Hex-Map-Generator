@@ -1,0 +1,710 @@
+/* --- Globale Farb-Variablen --- */
+:root {
+    /* Ressourcen */
+    --color-lumber: #1f9d35;
+    --color-brick: #e36529;
+    --color-wool: #a1b802;
+    --color-grain: #fec53c;
+    --color-ore: #b7bdb9;
+    --color-desert: #d9d295;
+    --color-unexplored: #e0e6ed;
+    --color-ep-d2: #8b4513;
+    --color-sea: #0071ae;
+    --color-goldriver: #9c8500;
+
+    /* Allgemeine UI & Spiel-Elemente */
+    --color-water: #74b9ff;
+    --color-token: #eae9e5;
+    --color-pier: #de962f;
+    --color-3to1: #ffffff;
+    --color-red-num: #cc0000;
+    --color-num: #014404;
+    --color-dark: #333333;
+
+    /* Erweiterungen & UI-Akzente */
+    --color-ext-red: #800000;
+    --color-ext-lightblue: #006e90;
+    --color-ext-darkblue: #103a59;
+    --color-ext-yellow: #905c28;
+    --color-ext-purple: #6f3659;
+
+    --color-ext-border-gold: #f1c40f;
+    --color-ext-text-gold: #e3d180;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Das Layout der gesamten Seite */
+body {
+    display: flex;
+    flex-direction: row;
+    /* Sidebar links, Karte rechts */
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    /* Kein Scrollen */
+    background-color: var(--color-water);
+}
+
+/* Deine Sidebar links (der weiße Bereich auf dem Bild) */
+header {
+    width: 280px;
+    flex-shrink: 0;
+    height: 100vh;
+    background-color: var(--color-ext-red);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+header::-webkit-scrollbar {
+    width: 6px;
+}
+
+header::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Zentriert die Buttons */
+    width: 100%;
+    /* Nimmt die volle Breite der Leiste minus Padding */
+}
+
+.controls button {
+    width: 100%;
+    /* Passt sich dynamisch an */
+    max-width: 220px;
+    /* Wird aber niemals zu riesig */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #1a252f;
+}
+
+/*region Logo*/
+/* --- Hauptlogo in der Seitenleiste --- */
+.main-logo {
+    padding: 20px 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 25px;
+    border: 0px solid #000000;
+    user-select: none;
+}
+
+.logo-title {
+    display: block;
+    /* Zwingt das Wort in eine eigene Zeile */
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--color-ext-text-gold);
+    font-size: 3.2rem;
+    font-weight: bold;
+    line-height: 0.9;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+    /* Tiefer Schatten für 3D-Wirkung */
+}
+
+.logo-subtitle {
+    display: block;
+    font-family: sans-serif;
+    color: var(--color-ext-text-gold);
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 4px;
+    margin-top: 10px;
+    border-top: 1px solid var(--color-ext-text-gold);
+    padding-top: 8px;
+}
+
+/*endregion Logo*/
+/*#region Optionen*/
+/* Styling für das Optionsmenü in der Sidebar */
+/* --- OPTIONEN-MENÜ KATEGORIEN --- */
+
+.options-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Abstand zwischen den gesamten Kategorien */
+
+    /* NEU: Die Scroll-Logik */
+    max-height: 60vh;
+    /* Nimmt maximal 60% der Bildschirmhöhe ein (Wert anpassen, falls nötig) */
+    overflow-y: auto;
+    /* Zeigt eine Scrollbar an, wenn der Inhalt zu lang ist */
+    overflow-x: hidden;
+    /* Verhindert seitliches Scrollen */
+
+    /* Etwas Abstand rechts, damit die Scrollbar nicht am Text klebt */
+    padding-right: 10px;
+}
+
+.options-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.options-menu::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.options-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Der Container um eine Gruppe von Checkboxen */
+.option-category {
+    background: rgba(255, 255, 255, 0.4);
+    /* Sehr leichter Hintergrund zur Abhebung */
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-dark, #333);
+    /* Ein farbiger Akzent an der linken Seite */
+}
+
+/* Die kleine Überschrift über den Checkboxen */
+.category-title {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-dark, #333);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 6px;
+}
+
+/* Anpassung der bestehenden Items (falls du das noch nicht hattest) */
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.option-item:last-child {
+    margin-bottom: 0;
+    /* Verhindert doppelten Abstand ganz unten */
+}
+
+.option-item label {
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: #444;
+}
+
+/* --- Modales Fenster (Einstellungen) --- */
+
+/* Der dunkle Hintergrund */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Halbtransparentes Schwarz */
+    z-index: 9999;
+    /* Garantiert immer ganz oben */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    /* Macht den Ozean im Hintergrund schön unscharf */
+}
+
+/* Hilfsklasse zum Verstecken */
+.hidden {
+    display: none !important;
+}
+
+/* Das eigentliche weiße Fenster */
+.modal-content {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.3s ease-out;
+    /* Eine kleine Einblend-Animation */
+}
+
+/* Kopfbereich des Modals mit dem X-Button */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--color-dark);
+    font-size: 1.3rem;
+}
+
+/* Der Schließen-Button (X) */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--color-red-num);
+    background: none;
+}
+
+.main-btn {
+    background-color: var(--color-ext-text-gold);
+    ;
+    color: var(--color-dark);
+    margin-top: 15px;
+}
+
+.main-btn:hover {
+    background-color: #a3845c;
+    ;
+}
+
+/* Zweit-Button-Styling (für den Einstellungen-Button links) */
+.secondary-btn {
+    background-color: #ecf0f1;
+    color: var(--color-dark);
+    margin-top: 15px;
+}
+
+.secondary-btn:hover {
+    background-color: #bdc3c7;
+}
+
+/* Kleine Animation für das Modal */
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/*#endregion Optionen*/
+/*region Map*/
+/* Der Container für das Meer rechts */
+#map-container {
+    flex-grow: 1;
+    /* Nimm den gesamten restlichen Platz ein */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    /* Zentriert die Karte horizontal */
+    align-items: center;
+    /* Zentriert die Karte vertikal */
+    /* padding: 20px; */
+    /* Ein kleiner Schutzrand zum Bildschirmrand */
+}
+
+/* Das eigentliche SVG (Die Insel) */
+#map-viewport {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    max-width: 100vw;
+}
+
+/*endregion Map*/
+/*region Extensions-Sidebar*/
+/* --- Erweiterungen in der Seitenleiste --- */
+
+.extensions-sidebar {
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Abstand zwischen den verschiedenen Erweiterungen */
+}
+
+.extensions-title {
+    color: var(--color-ext-text-gold);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--color-ext-text-gold);
+    padding-bottom: 8px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Die standard Checkbox unsichtbar machen */
+.hidden-checkbox {
+    display: none;
+}
+
+.hex-ext-card {
+    border-radius: 8px;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+    border: 3px solid transparent;
+    /* Platzhalter für den Aktiv-Rahmen */
+    user-select: none;
+    /* Verhindert, dass der Text beim schnellen Klicken markiert wird */
+}
+
+/* Schwebe-Effekt (Hover) */
+.hex-ext-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ext-oceans-and-islands {
+    background-color: var(--color-ext-lightblue);
+}
+
+.ext-metropolises-and-raids {
+    background-color: var(--color-ext-yellow);
+}
+
+.ext-privateers-and-expeditions {
+    background-color: var(--color-ext-darkblue);
+}
+
+.ext-markets-and-highwaymen {
+    background-color: var(--color-ext-purple);
+}
+
+/* AKTIV-STATUS: Wenn die unsichtbare Checkbox angehakt ist! */
+.hidden-checkbox:checked+.hex-ext-card {
+    border: 3px solid var(--color-ext-border-gold);
+    /* Ein schöner goldener Rahmen */
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+    /* Goldener Schein nach außen */
+    transform: scale(1.02);
+    /* Karte wird minimal größer */
+}
+
+/* Die Typografie in der Karte */
+.hex-title {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--color-ext-text-gold);
+    font-size: 2.6rem;
+    font-weight: bold;
+    line-height: 1;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.hex-subtitle {
+    font-family: sans-serif;
+    color: var(--color-ext-text-gold);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.hex-bar-red {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), #ffffff, rgba(255, 255, 255, 0.4));
+    color: var(--color-ext-red);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    width: 95%;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.hex-bar-lightblue {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), #ffffff, rgba(255, 255, 255, 0.4));
+    color: var(--color-ext-lightblue);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    width: 95%;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.hex-bar-darkblue {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), #ffffff, rgba(255, 255, 255, 0.4));
+    color: var(--color-ext-darkblue);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    width: 95%;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.hex-bar-yellow {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), #ffffff, rgba(255, 255, 255, 0.4));
+    color: var(--color-ext-yellow);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    width: 95%;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.hex-bar-purple {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.4), #ffffff, rgba(255, 255, 255, 0.4));
+    color: var(--color-ext-purple);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    width: 95%;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/*endregion Extensions-Sidebar*/
+
+/* --- hex Ressourcen Farben --- */
+.hex-desert {
+    fill: var(--color-desert);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-lumber {
+    fill: var(--color-lumber);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-brick {
+    fill: var(--color-brick);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-wool {
+    fill: var(--color-wool);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-grain {
+    fill: var(--color-grain);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-ore {
+    fill: var(--color-ore);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-unexplored {
+    fill: var(--color-unexplored);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-water {
+    fill: var(--color-water);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-sea {
+    fill: var(--color-sea);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-gold {
+    fill: var(--color-goldriver);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-ep-d2 {
+    fill: var(--color-ep-d2);
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+.hex-tb-castle,
+.hex-tb-castle-half,
+.hex-tb-castle-full {
+    fill: #7c807d;
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+/* Burg (Lila/Grau) */
+.hex-tb-mine,
+.hex-tb-mine-half,
+.hex-tb-mine-full {
+    fill: #a84111;
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+/* Mine (Schiefergrau) */
+.hex-tb-cabin,
+.hex-tb-cabin-half,
+.hex-tb-cabin-full {
+    fill: #126322;
+    stroke: var(--color-dark);
+    stroke-width: 2;
+}
+
+/* Holzhütte (Braun) */
+
+/* =========================================
+   MOBILE OPTIMIERUNG (Handy im Querformat)
+   ========================================= */
+@media screen and (max-width: 900px),
+screen and (max-height: 500px) {
+
+    /* 1. Seitenleiste schmaler machen */
+    header {
+        width: 220px;
+        /* Vorher 280px */
+        padding: 10px;
+        /* Weniger Rand */
+    }
+
+    /* 2. Logo schrumpfen */
+    .main-logo {
+        padding: 10px 5px;
+        margin-bottom: 15px;
+    }
+
+    .logo-title {
+        font-size: 2rem;
+        /* Vorher 3.2rem */
+    }
+
+    .logo-subtitle {
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        margin-top: 5px;
+    }
+
+    /* 3. Buttons extrem kompakt und mittig machen */
+    .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Zentriert die Buttons horizontal */
+        justify-content: center;
+        width: 100%;
+        margin: 10px 0 15px 0;
+        /* Abstand nach oben und unten */
+        padding: 0;
+        /* Wichtig: Verhindert unsichtbare Verschiebungen */
+    }
+
+    .controls button {
+        width: 90%;
+        /* Nimmt 90% der roten Leiste ein (lässt einen schönen Rand) */
+        max-width: 180px;
+        /* Wird niemals breiter als 180px */
+        box-sizing: border-box;
+        /* WICHTIG: Zwingt den Browser, Padding NICHT zur Breite zu addieren */
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        margin: 5px 0;
+        /* 5px Abstand zwischen den beiden Buttons */
+        border-radius: 5px;
+        /* Damit sie nicht zu eckig wirken */
+    }
+
+    /* 4. Erweiterungs-Karten anpassen */
+    .extensions-sidebar {
+        margin-top: 10px;
+        gap: 10px;
+        /* Weniger Abstand zwischen den Karten */
+    }
+
+    .hex-ext-card {
+        padding: 10px 5px;
+    }
+
+    .hex-title {
+        font-size: 1.8rem;
+        /* Die Erweiterungs-Schrift etwas kleiner */
+    }
+
+    .hex-bar-red .hex-bar-lightblue .hex-bar-darkblue .hex-bar-yellow .hex-bar-purple {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+    }
+
+    /* 5. Karte etwas näher an den Rand rücken */
+    #map-container {
+        padding: 10px;
+    }
+}

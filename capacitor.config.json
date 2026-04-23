@@ -1,0 +1,10 @@
+{
+  "appId": "com.map_generator.hex",
+  "appName": "Hex Map",
+  "webDir": "www",
+  "plugins": {
+    "StatusBar": {
+      "hidden": true
+    }
+  }
+}

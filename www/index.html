@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hex Map Generator</title>
+    <link rel="icon" type="image/x-icon" href="/www/image/icon-512.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <header>
+        <h1 class="main-logo">
+            <span class="logo-title">HEX-MAP</span>
+            <span class="logo-subtitle">GENERATOR</span>
+        </h1>
+        <div class="controls">
+            <button id="generate-btn" class="main-btn">KARTE GENERIEREN</button>
+            <button id="open-settings-btn" class="secondary-btn">EINSTELLUNGEN</button>
+            <button id="open-credits-btn" class="secondary-btn">CREDITS</button>
+        </div>
+        <div class="extensions-sidebar">
+            <h3 class="extensions-title">Erweiterungen</h3>
+
+            <input type="checkbox" id="ext-5-6-player" class="hidden-checkbox">
+            <label for="ext-5-6-player" class="hex-ext-card">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">STANDARDKARTE</span>
+                <span class="hex-bar-red">ERWEITERT</span>
+            </label>
+
+            <input type="checkbox" id="ext-oceans-and-islands" class="hidden-checkbox">
+            <label for="ext-oceans-and-islands" class="ext-oceans-and-islands hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">OZEANE & INSELN</span>
+                <span class="hex-bar-lightblue">MODUS</span>
+            </label>
+
+            <input type="checkbox" id="ext-oceans-and-islands-5-6-player" class="hidden-checkbox">
+            <label for="ext-oceans-and-islands-5-6-player" class="ext-oceans-and-islands hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">OZEANE & INSELN</span>
+                <span class="hex-bar-lightblue">ERWEITERT</span>
+            </label>
+
+            <input type="checkbox" id="ext-privateers-and-expeditions" class="hidden-checkbox">
+            <label for="ext-privateers-and-expeditions" class="ext-privateers-and-expeditions hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">FREIBEUTER & EXPEDITIONEN</span>
+                <span class="hex-bar-darkblue">MODUS</span>
+            </label>
+
+            <input type="checkbox" id="ext-privateers-and-expeditions-5-6-player" class="hidden-checkbox">
+            <label for="ext-privateers-and-expeditions-5-6-player" class="ext-privateers-and-expeditions hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">FREIBEUTER & EXPEDITIONEN</span>
+                <span class="hex-bar-darkblue">ERWEITERT</span>
+            </label>
+
+            <input type="checkbox" id="ext-markets-and-highwaymen" class="hidden-checkbox">
+            <label for="ext-markets-and-highwaymen" class="ext-markets-and-highwaymen hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">MÄRKTE & WEGRÄUBER</span>
+                <span class="hex-bar-purple">MODUS</span>
+            </label>
+
+            <input type="checkbox" id="ext-markets-and-highwaymen-5-6-player" class="hidden-checkbox">
+            <label for="ext-markets-and-highwaymen-5-6-player" class="ext-markets-and-highwaymen hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">MÄRKTE & WEGRÄUBER</span>
+                <span class="hex-bar-purple">ERWEITERT</span>
+            </label>
+
+            <input type="checkbox" id="ext-metropolises-and-raids" class="hidden-checkbox">
+            <label for="ext-metropolises-and-raids" class="ext-metropolises-and-raids hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">METROPOLEN & ÜBERFÄLLE</span>
+                <span class="hex-bar-yellow">MODUS</span>
+            </label>
+
+            <input type="checkbox" id="ext-metropolises-and-raids-5-6-player" class="hidden-checkbox">
+            <label for="ext-metropolises-and-raids-5-6-player" class="ext-metropolises-and-raids hex-ext-card ">
+                <span class="hex-title">HEX-MAP</span>
+                <span class="hex-subtitle">METROPOLEN & ÜBERFÄLLE</span>
+                <span class="hex-bar-yellow">ERWEITERT</span>
+            </label>
+        </div>
+    </header>
+
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Einstellungen</h2>
+                <button id="close-settings-btn" class="close-btn">&times;</button>
+            </div>
+
+            <div class="options-menu">
+
+                <div class="option-category">
+                    <h4 class="category-title">Basis-Regeln</h4>
+                    <div class="option-item">
+                        <input type="checkbox" id="strict-red-rule" checked>
+                        <label for="strict-red-rule">6 und 8 dürfen sich nicht berühren</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="strict-low-rule">
+                        <label for="strict-low-rule">2 und 12 dürfen sich nicht berühren</label>
+                    </div>
+                </div>
+
+                <div class="option-category">
+                    <h4 class="category-title">Ozeane & Inseln</h4>
+                    <div class="option-item">
+                        <input type="checkbox" id="sf-desert-triangle" checked>
+                        <label for="sf-desert-triangle">Wüsten als exaktes Dreieck anordnen</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="sf-small-islands">
+                        <label for="sf-small-islands">Inselwelt (Max. 11 bzw. 16 Landfelder pro Insel)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="sf-lighthouse">
+                        <label for="sf-lighthouse">Leuchtturm generieren (2. große Brücke)</label>
+                    </div>
+                </div>
+
+                <div class="option-category">
+                    <h4 class="category-title">Freibeuter & Expeditionen</h4>
+                    <div class="option-item">
+                        <input type="checkbox" id="ep-start-field-6">
+                        <label for="ep-start-field-6">Das Startfeld hat immer eine 6</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="ep-show-plate-labels" checked>
+                        <label for="ep-show-plate-labels">Zeige die Beschriftungen der Meeresplatten an</label>
+                    </div>
+                </div>
+
+                <div class="option-category">
+                    <h4 class="category-title">Märkte & Wegräuber</h4>
+                    <div class="option-item">
+                        <input type="checkbox" id="tb-random-robber">
+                        <label for="tb-random-robber">Wegräuber zufällig platzieren</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="tb-random-desert">
+                        <label for="tb-random-desert">Wüsten zufällig platzieren (nur bei 5-6 Spieler)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="credits-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Credits & Rechtliches</h2>
+                <button id="close-credits-btn" class="close-btn">&times;</button>
+            </div>
+
+            <div class="options-menu" style="padding: 20px; font-size: 1.1rem; line-height: 1.5; color: #333;">
+                <p style="margin-bottom: 20px;">
+                    Dieses Projekt ist ein inoffizieller Map-Generator und steht in <strong>keinem Zusammenhang mit der
+                        Catan GmbH, dem Kosmos Verlag oder offiziellen Catan-Produkten</strong>. Alle Rechte an der
+                    Marke "Catan" liegen bei ihren jeweiligen Eigentümern.
+                </p>
+                <h4 class="category-title" style="margin-bottom: 15px; text-align: left;">Bildquellen (Sprites):</h4>
+                <ul style="list-style-type: disc; margin-left: 20px; text-align: left; margin-bottom: 20px;">
+                    <li><a href="https://www.flaticon.com/free-icons/wheat" title="wheat icons">Wheat icons created by
+                            Freepik - Flaticon</a></li>
+                    <li><a href="https://www.flaticon.com/free-icons/wood" title="wood icons">Wood icons created by
+                            Freepik - Flaticon</a></li>
+                    <li><a href="https://www.flaticon.com/free-icons/gold" title="gold icons">Gold & Brick icons created
+                            by
+                            dwiangga.icon - Flaticon</a>
+                    </li>
+                    <li><a href="https://www.flaticon.com/free-icons/ore" title="ore icons">Ore icons created by
+                            Fir3Ghost - Flaticon</a>
+                    </li>
+                    <li><a href="https://www.flaticon.com/free-icons/sheep" title="sheep icons">Sheep icons created by
+                            iconixar - Flaticon</a>
+                    </li>
+                    <li><a href="https://www.flaticon.com/free-icons/castle" title="castle icons">Castle icons created
+                            by Freepik - Flaticon</a>
+                    </li>
+                    <li><a href="https://www.flaticon.com/free-icons/cabin" title="cabin icons">Cabin icons created by
+                            juicy_fish - Flaticon</a>
+                    </li>
+                    <li><a href="https://www.flaticon.com/free-icons/shaft" title="shaft icons">Shaft icons created by
+                            Smashicons - Flaticon</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <main id="map-container">
+        <svg id="map-viewport" viewBox="200 200 600 600" xmlns="http://www.w3.org/2000/svg">
+            <g id="hex-map"></g>
+        </svg>
+    </main>
+
+    <script src="panzoom.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
