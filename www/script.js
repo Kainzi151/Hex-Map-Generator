@@ -364,23 +364,21 @@ document.addEventListener("DOMContentLoaded", () => {
         robber.setAttribute("cx", midX);
         robber.setAttribute("cy", midY);
         robber.setAttribute("r", 10); // Schöne Größe für die Straße
-        robber.setAttribute("fill", "#111111");
-        robber.setAttribute("stroke", "#ffffff");
+        robber.setAttribute("fill", "#ffffff");
+        robber.setAttribute("stroke", "#111111");
         robber.setAttribute("stroke-width", "2");
 
         // Optional: Ein kleines "W" oder Barbaren-Symbol in den Kreis schreiben
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", midX);
-        text.setAttribute("y", midY + 4);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("font-family", "sans-serif");
-        text.setAttribute("font-size", "12");
-        text.setAttribute("font-weight", "bold");
-        text.setAttribute("fill", "#ffffff");
-        text.textContent = "R"; // R für Räuber / Wegräuber
+        const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+        const iconSize = 20;
+        img.setAttribute("href", "./image/robber.png");
+        img.setAttribute("width", iconSize);
+        img.setAttribute("height", iconSize);
+        img.setAttribute("x", midX - (iconSize / 2));
+        img.setAttribute("y", midY - (iconSize / 2));
 
         svgMap.appendChild(robber);
-        svgMap.appendChild(text);
+        svgMap.appendChild(img);
     }
 
     function checkMaxIslandSize(boardTiles, maxSize) {
@@ -1378,21 +1376,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         circle.setAttribute("cy", wy);
                         circle.setAttribute("r", 12);
 
-                        circle.setAttribute("fill", isBridge ? "#8b4513" : "#ffffff");
-                        circle.setAttribute("stroke", isBridge ? "#ffffff" : "#d9534f");
+                        circle.setAttribute("fill", "#ffffff");
+                        circle.setAttribute("stroke", isBridge ? "#8b4513" : "#d9534f");
                         circle.setAttribute("stroke-width", "2");
                         svgMap.appendChild(circle);
 
-                        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        text.setAttribute("x", wx);
-                        text.setAttribute("y", wy + 4);
-                        text.setAttribute("text-anchor", "middle");
-                        text.setAttribute("font-family", "sans-serif");
-                        text.setAttribute("font-size", "12");
-                        text.setAttribute("font-weight", "bold");
-                        text.setAttribute("fill", isBridge ? "#ffffff" : "#333");
-                        text.textContent = isBridge ? "B" : "L";
-                        svgMap.appendChild(text);
+                        const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+                        const iconSize = 20;
+                        img.setAttribute("href", isBridge ? "./image/bridge.png" : "./image/lighthouse.png");
+                        img.setAttribute("width", iconSize);
+                        img.setAttribute("height", iconSize);
+                        img.setAttribute("x", wx - (iconSize / 2));
+                        img.setAttribute("y", wy - (iconSize / 2));
+                        svgMap.appendChild(img);
                     };
 
                     // Zeichnet die Punkte!
@@ -1433,21 +1429,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     circle.setAttribute("r", 12);
 
                     // Ein schönes, massives Stein-Grau für die Mauer
-                    circle.setAttribute("fill", "#757575");
-                    circle.setAttribute("stroke", "#ffffff");
+                    circle.setAttribute("fill", "#ffffff");
+                    circle.setAttribute("stroke", "#757575");
                     circle.setAttribute("stroke-width", "2");
                     svgMap.appendChild(circle);
 
-                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    text.setAttribute("x", wx);
-                    text.setAttribute("y", wy + 4); // Vertikal zentrieren
-                    text.setAttribute("text-anchor", "middle");
-                    text.setAttribute("font-family", "sans-serif");
-                    text.setAttribute("font-size", "12");
-                    text.setAttribute("font-weight", "bold");
-                    text.setAttribute("fill", "#ffffff");
-                    text.textContent = "M"; // "M" für Mauer
-                    svgMap.appendChild(text);
+                    const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+                    const iconSize = 20;
+                    img.setAttribute("href", "./image/wall.png");
+                    img.setAttribute("width", iconSize);
+                    img.setAttribute("height", iconSize);
+                    img.setAttribute("x", wx - (iconSize / 2));
+                    img.setAttribute("y", wy - (iconSize / 2));
+                    svgMap.appendChild(img);
                 };
 
                 // Setzt die Marker auf die beiden Enden der Kante
