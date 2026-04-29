@@ -2258,14 +2258,23 @@ if (openCreditsBtn && creditsModal && closeCreditsBtn) {
     });
 }
 
-
+// Alte Service Worker und Caches entfernen, falls vorhanden
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js")
-            .then(res => console.log("Service Worker aktiv!"))
-            .catch(err => console.log("Service Worker Fehler", err));
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+            registration.unregister();
+        }
     });
 }
+if ('caches' in window) {
+    caches.keys().then(function(names) {
+        for (let name of names)
+            caches.delete(name);
+    });
+}
+
+
+
 
 window.addEventListener('load', function () {
     const zoomElement = document.getElementById("panzoom-layer");
