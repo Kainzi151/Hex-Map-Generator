@@ -147,6 +147,52 @@ document.addEventListener("DOMContentLoaded", () => {
         return points.join(" ");
     }
 
+    function createRotatableGroup(cx, cy) {
+        const container = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        container.setAttribute("class", "rotatable-content");
+        container.setAttribute("data-cx", cx);
+        container.setAttribute("data-cy", cy);
+        if (window.isMapRotated) {
+            container.setAttribute("transform", `rotate(-90, ${cx}, ${cy})`);
+        }
+        svgMap.appendChild(container);
+        return container;
+    }
+
+    const portraitQuery = window.matchMedia("(orientation: portrait) and (max-width: 900px)");
+    portraitQuery.addEventListener("change", (e) => {
+        const isPortrait = e.matches;
+        const isOPE = document.getElementById('ext-oceans-and-islands').checked || 
+                      document.getElementById('ext-oceans-and-islands-5-6-player').checked ||
+                      document.getElementById('ext-privateers-and-expeditions').checked ||
+                      document.getElementById('ext-privateers-and-expeditions-5-6-player').checked;
+        
+        if (isOPE) {
+            window.isMapRotated = isPortrait;
+            
+            if (isPortrait) {
+                svgMap.classList.add("rotate-for-portrait");
+                const vb = svgMap.getAttribute("data-viewbox-portrait");
+                if (vb) svgMap.setAttribute("viewBox", vb);
+            } else {
+                svgMap.classList.remove("rotate-for-portrait");
+                const vb = svgMap.getAttribute("data-viewbox-landscape");
+                if (vb) svgMap.setAttribute("viewBox", vb);
+            }
+
+            const rotatables = svgMap.querySelectorAll(".rotatable-content");
+            rotatables.forEach(group => {
+                const cx = group.getAttribute("data-cx");
+                const cy = group.getAttribute("data-cy");
+                if (isPortrait) {
+                    group.setAttribute("transform", `rotate(-90, ${cx}, ${cy})`);
+                } else {
+                    group.removeAttribute("transform");
+                }
+            });
+        }
+    });
+
     function drawHex(x, y, resourceClass) {
         const hex = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         const points = getHexPolygonPoints(x, y, HEX_SIZE);
@@ -164,6 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (resourceClass === "hex-gold") iconFile = "gold.png";
 
         if (iconFile) {
+            let container = createRotatableGroup(x, y);
             const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
             img.setAttribute("href", `./image/${iconFile}`);
             const imgSize = 44;
@@ -171,13 +218,15 @@ document.addEventListener("DOMContentLoaded", () => {
             img.setAttribute("y", y - imgSize / 2 - 15); // Leicht nach oben verschieben
             img.setAttribute("width", imgSize);
             img.setAttribute("height", imgSize);
-            svgMap.appendChild(img);
+            container.appendChild(img);
         }
     }
 
     function drawToken(x, y, number) {
         // Token leicht nach unten verschieben, da oben das Bild ist
         const tokenY = y + 25;
+
+        let container = createRotatableGroup(x, y);
 
         // 1. Den Kreis zeichnen
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -187,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
         circle.setAttribute("fill", "var(--color-token)"); // Leichtes Beige (Cornsilk)
         circle.setAttribute("stroke", "var(--color-dark)");
         circle.setAttribute("stroke-width", "1.5");
-        svgMap.appendChild(circle);
+        container.appendChild(circle);
 
         // 2. Die Zahl (Text) einfügen
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -206,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         text.textContent = number;
-        svgMap.appendChild(text);
+        container.appendChild(text);
 
         // Wahrscheinlichkeitspunkte zeichnen (optional, macht es authentischer)
         const dotsMapping = {
@@ -225,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 dot.setAttribute("fill", (number === 6 || number === 8) ? "var(--color-red-num)" : "var(--color-num)");
                 dotGroup.appendChild(dot);
             }
-            svgMap.appendChild(dotGroup);
+            container.appendChild(dotGroup);
         }
     }
 
@@ -287,6 +336,8 @@ document.addEventListener("DOMContentLoaded", () => {
         pier1.setAttribute("stroke-linecap", "round");
         svgMap.appendChild(pier2);
 
+        let container = createRotatableGroup(harborX, harborY);
+
         // 4. Den Hafen-Kreis zeichnen
         // Radius etwas vergrößert (auf 18), damit der Text besser reinpasst
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -296,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
         circle.setAttribute("fill", color);
         circle.setAttribute("stroke", "var(--color-dark)");
         circle.setAttribute("stroke-width", "2");
-        svgMap.appendChild(circle);
+        container.appendChild(circle);
 
         // 5. Den Text ("3:1" oder Rohstoff) hinzufügen
         const iconMap = {
@@ -320,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
             text.setAttribute("font-weight", "bold");
             text.setAttribute("fill", "#333");
             text.textContent = textValue;
-            svgMap.appendChild(text);
+            container.appendChild(text);
         } else {
             // Für Ressourcen zeichnen wir das PNG
             const iconFilename = "image/" + iconMap[textValue];
@@ -339,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.setAttribute("x", harborX - (iconSize / 2));
                 img.setAttribute("y", harborY - (iconSize / 2));
 
-                svgMap.appendChild(img);
+                container.appendChild(img);
             }
         }
     }
@@ -357,6 +408,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // 2. Den exakten Mittelpunkt der Kante berechnen
         const midX = (cornerAx + cornerBx) / 2;
         const midY = (cornerAy + cornerBy) / 2;
+
+        let container = createRotatableGroup(midX, midY);
 
         // 3. Den Wegräuber zeichnen (Hier als markanter, schwarzer Kreis mit weißem Rand)
         // Du kannst hier später natürlich auch wieder ein <image> Tag mit einem PNG nutzen!
@@ -377,8 +430,8 @@ document.addEventListener("DOMContentLoaded", () => {
         img.setAttribute("x", midX - (iconSize / 2));
         img.setAttribute("y", midY - (iconSize / 2));
 
-        svgMap.appendChild(robber);
-        svgMap.appendChild(img);
+        container.appendChild(robber);
+        container.appendChild(img);
     }
 
     function checkMaxIslandSize(boardTiles, maxSize) {
@@ -550,8 +603,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
+    window.isMapRotated = false;
+
     function generateMap() {
         svgMap.innerHTML = "";
+
+        svgMap.classList.remove("rotate-for-portrait");
+        svgMap.style.transformOrigin = "";
+        window.isMapRotated = false;
 
         const is5to6Player = document.getElementById("ext-5-6-player").checked;
 
@@ -567,12 +626,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const isMR = document.getElementById('ext-metropolises-and-raids').checked;
         const isMR5to6Player = document.getElementById('ext-metropolises-and-raids-5-6-player').checked;
 
+        const isPortrait = window.matchMedia("(orientation: portrait) and (max-width: 900px)").matches;
+
         if (isOI || isOI5to6Player) {
+            if (isPortrait) window.isMapRotated = true;
             generateOIMap(isOI5to6Player);
+            if (isPortrait) {
+                svgMap.classList.add("rotate-for-portrait");
+                svgMap.style.transformOrigin = "500px 500px";
+            }
         }
 
         else if (isPE || isPE5to6Player) {
+            if (isPortrait) window.isMapRotated = true;
             generatePEMap(isPE5to6Player);
+            if (isPortrait) {
+                svgMap.classList.add("rotate-for-portrait");
+                svgMap.style.transformOrigin = "300px 500px";
+            }
         }
 
         else if (isMH || isMH5to6Player) {
@@ -750,10 +821,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "5,0": "hex-sea"
         };
 
-        const currentGrid = is5to6Players ? gridCoords5to6 : gridCoords;
-        const currentFixedOICoords = is5to6Players ? fixedOICoords5to6 : fixedOICoords;
+        let currentGrid = is5to6Players ? gridCoords5to6 : gridCoords;
+        let currentFixedOICoords = is5to6Players ? fixedOICoords5to6 : fixedOICoords;
         const currentResourceCounts = is5to6Players ? resourceCounts5to6 : resourceCounts;
         const currentNumberCounts = is5to6Players ? numberCounts5to6 : numberCounts;
+
 
         /*currentGrid.forEach(coord => {
             const q = coord[0];
@@ -1313,8 +1385,46 @@ document.addEventListener("DOMContentLoaded", () => {
             const centerX = 500;
             const centerY = 500;
 
-            // Kamera extrem weit rauszoomen, da Seefahrer-Karten riesig sind
-            svgMap.setAttribute("viewBox", "-150 -150 1500 1500");
+            // Calculate dynamic viewBox
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            boardTiles.forEach(tile => {
+                const x = centerX + HEX_WIDTH * (tile.q + tile.r / 2);
+                const y = centerY + HEX_SIZE * 1.5 * tile.r;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            });
+            dynamicHarbors.forEach(harbor => {
+                const hx = centerX + HEX_WIDTH * (harbor.q + harbor.r / 2);
+                const hy = centerY + HEX_SIZE * 1.5 * harbor.r;
+                const angle = (60 * harbor.edge) * (Math.PI / 180);
+                const harborX = hx + (HEX_SIZE * 1.4) * Math.cos(angle);
+                const harborY = hy + (HEX_SIZE * 1.4) * Math.sin(angle);
+                if (harborX < minX) minX = harborX;
+                if (harborX > maxX) maxX = harborX;
+                if (harborY < minY) minY = harborY;
+                if (harborY > maxY) maxY = harborY;
+            });
+
+            const isPortrait = window.matchMedia("(orientation: portrait) and (max-width: 900px)").matches;
+            
+            let lMinX = minX - 120;
+            let lMaxX = maxX + 120;
+            let lMinY = minY - 120;
+            let lMaxY = maxY + 120;
+            const viewBoxLandscape = `${lMinX} ${lMinY} ${lMaxX - lMinX} ${lMaxY - lMinY}`;
+
+            const pMinX = centerX - maxY + centerY - 120;
+            const pMaxX = centerX - minY + centerY + 120;
+            const pMinY = centerY + minX - centerX - 120;
+            const pMaxY = centerY + maxX - centerX + 120;
+            const viewBoxPortrait = `${pMinX} ${pMinY} ${pMaxX - pMinX} ${pMaxY - pMinY}`;
+
+            svgMap.setAttribute("data-viewbox-landscape", viewBoxLandscape);
+            svgMap.setAttribute("data-viewbox-portrait", viewBoxPortrait);
+            
+            svgMap.setAttribute("viewBox", isPortrait ? viewBoxPortrait : viewBoxLandscape);
 
             boardTiles.forEach(tile => {
                 const x = centerX + HEX_WIDTH * (tile.q + tile.r / 2);
@@ -1371,6 +1481,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const drawWonderDot = (wx, wy, type) => {
                         const isBridge = type === "bridge";
 
+                        let container = createRotatableGroup(wx, wy);
+
                         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                         circle.setAttribute("cx", wx);
                         circle.setAttribute("cy", wy);
@@ -1379,7 +1491,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         circle.setAttribute("fill", "#ffffff");
                         circle.setAttribute("stroke", isBridge ? "#8b4513" : "#d9534f");
                         circle.setAttribute("stroke-width", "2");
-                        svgMap.appendChild(circle);
+                        container.appendChild(circle);
 
                         const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
                         const iconSize = 20;
@@ -1388,7 +1500,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         img.setAttribute("height", iconSize);
                         img.setAttribute("x", wx - (iconSize / 2));
                         img.setAttribute("y", wy - (iconSize / 2));
-                        svgMap.appendChild(img);
+                        container.appendChild(img);
                     };
 
                     // Zeichnet die Punkte!
@@ -1423,6 +1535,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Hilfsfunktion für den Mauer-Marker
                 const drawWallDot = (wx, wy) => {
+                    let container = createRotatableGroup(wx, wy);
+
                     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                     circle.setAttribute("cx", wx);
                     circle.setAttribute("cy", wy);
@@ -1432,7 +1546,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     circle.setAttribute("fill", "#ffffff");
                     circle.setAttribute("stroke", "#757575");
                     circle.setAttribute("stroke-width", "2");
-                    svgMap.appendChild(circle);
+                    container.appendChild(circle);
 
                     const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
                     const iconSize = 20;
@@ -1441,7 +1555,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     img.setAttribute("height", iconSize);
                     img.setAttribute("x", wx - (iconSize / 2));
                     img.setAttribute("y", wy - (iconSize / 2));
-                    svgMap.appendChild(img);
+                    container.appendChild(img);
                 };
 
                 // Setzt die Marker auf die beiden Enden der Kante
@@ -1642,10 +1756,11 @@ document.addEventListener("DOMContentLoaded", () => {
             12: 1
         };
 
-        const currentGridCoords = is5to6Player ? epGridCoords5to6 : epGridCoords;
-        const currentSeaCoords = is5to6Player ? epSeaCoords5to6 : epSeaCoords;
-        const currentGreenCoords = is5to6Player ? epGreenCoords5to6 : epGreenCoords;
-        const currentOrangeCoords = is5to6Player ? epOrangeCoords5to6 : epOrangeCoords;
+        let currentGridCoords = is5to6Player ? epGridCoords5to6 : epGridCoords;
+        let currentSeaCoords = is5to6Player ? epSeaCoords5to6 : epSeaCoords;
+        let currentGreenCoords = is5to6Player ? epGreenCoords5to6 : epGreenCoords;
+        let currentOrangeCoords = is5to6Player ? epOrangeCoords5to6 : epOrangeCoords;
+
 
         const currentResourceCounts = is5to6Player ? resourceCountsPE5to6 : resourceCountsPE;
         const currentNumberCounts = is5to6Player ? numberCountsPE5to6 : numberCountsPE;
@@ -1729,6 +1844,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 3. NEU: Große Beschriftung zeichnen (C1, C2, D2, D3, E, EE, F, EG, G)
             if (tile.label && isPEShowPlateLabelsActive) {
+                let container = createRotatableGroup(x, y);
+
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 text.setAttribute("x", x);
                 text.setAttribute("y", y + 8); // Leicht nach unten versetzt für perfekte Mitte
@@ -1741,14 +1858,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 text.setAttribute("fill", tile.type === 'd2' || tile.type === 'd3' ? "#ffffff" : "#1a365d");
 
                 text.textContent = tile.label;
-                svgMap.appendChild(text);
+                container.appendChild(text);
             }
         });
-        if (is5to6Player) {
-            svgMap.setAttribute("viewBox", "-100 -100 1600 1200");
-        } else {
-            svgMap.setAttribute("viewBox", "-50 -50 1100 1100");
-        }
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        boardTiles.forEach(tile => {
+            const x = centerX + HEX_WIDTH * (tile.q + tile.r / 2);
+            const y = centerY + HEX_SIZE * 1.5 * tile.r;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+        });
+
+        const isPortrait = window.matchMedia("(orientation: portrait) and (max-width: 900px)").matches;
+        
+        let lMinX = minX - 120;
+        let lMaxX = maxX + 120;
+        let lMinY = minY - 120;
+        let lMaxY = maxY + 120;
+        const viewBoxLandscape = `${lMinX} ${lMinY} ${lMaxX - lMinX} ${lMaxY - lMinY}`;
+
+        const pMinX = centerX - maxY + centerY - 120;
+        const pMaxX = centerX - minY + centerY + 120;
+        const pMinY = centerY + minX - centerX - 120;
+        const pMaxY = centerY + maxX - centerX + 120;
+        const viewBoxPortrait = `${pMinX} ${pMinY} ${pMaxX - pMinX} ${pMaxY - pMinY}`;
+
+        svgMap.setAttribute("data-viewbox-landscape", viewBoxLandscape);
+        svgMap.setAttribute("data-viewbox-portrait", viewBoxPortrait);
+
+        svgMap.setAttribute("viewBox", isPortrait ? viewBoxPortrait : viewBoxLandscape);
     }
 
     function generateMHMap(is5to6Player) {
@@ -2128,7 +2268,7 @@ if ("serviceWorker" in navigator) {
 }
 
 window.addEventListener('load', function () {
-    const zoomElement = document.getElementById("hex-map");
+    const zoomElement = document.getElementById("panzoom-layer");
 
     panzoom(zoomElement, {
         maxZoom: 1.5,      // Wie weit man hineinzoomen kann
